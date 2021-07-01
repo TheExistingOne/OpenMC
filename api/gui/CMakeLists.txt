@@ -1,4 +1,4 @@
-project(MultiMC_gui LANGUAGES CXX)
+project(OpenMC_gui LANGUAGES CXX)
 
 set(GUI_SOURCES
     DesktopServices.h

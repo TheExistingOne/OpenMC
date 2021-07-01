@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.1)
 
 string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_BUILD_DIR}" IS_IN_SOURCE_BUILD)
 if(IS_IN_SOURCE_BUILD)
-    message(FATAL_ERROR "You are building MultiMC in-source. Please separate the build tree from the source tree.")
+    message(FATAL_ERROR "You are building OpenMC in-source. Please separate the build tree from the source tree.")
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     if(CMAKE_HOST_SYSTEM_VERSION MATCHES ".*[Mm]icrosoft.*" OR
         CMAKE_HOST_SYSTEM_VERSION MATCHES ".*WSL.*"
     )
-        message(FATAL_ERROR "Building MultiMC is not supported in Linux-on-Windows distributions.")
+        message(FATAL_ERROR "OpenMC does not support building in WSL.")
     endif()
 endif()
 
@@ -18,7 +18,7 @@ if(WIN32)
     cmake_policy(SET CMP0020 OLD)
 endif()
 
-project(MultiMC)
+project(OpenMC)
 enable_testing()
 
 
@@ -50,55 +50,55 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Werror=return-type")
 ##################################### Set Application options #####################################
 
 ######## Set URLs ########
-set(MultiMC_NEWS_RSS_URL "https://multimc.org/rss.xml" CACHE STRING "URL to fetch MultiMC's news RSS feed from.")
+set(OpenMC_NEWS_RSS_URL "https://multimc.org/rss.xml" CACHE STRING "URL to fetch OpenMC's news RSS feed from.")
 
 ######## Set version numbers ########
-set(MultiMC_VERSION_MAJOR    0)
-set(MultiMC_VERSION_MINOR    6)
-set(MultiMC_VERSION_HOTFIX   12)
+set(OpenMC_VERSION_MAJOR    0)
+set(OpenMC_VERSION_MINOR    6)
+set(OpenMC_VERSION_HOTFIX   12)
 
 # Build number
-set(MultiMC_VERSION_BUILD -1 CACHE STRING "Build number. -1 for no build number.")
+set(OpenMC_VERSION_BUILD -1 CACHE STRING "Build number. -1 for no build number.")
 
 # Build platform.
-set(MultiMC_BUILD_PLATFORM "" CACHE STRING "A short string identifying the platform that this build was built for. Only used by the notification system and to display in the about dialog.")
+set(OpenMC_BUILD_PLATFORM "" CACHE STRING "A short string identifying the platform that this build was built for. Only used by the notification system and to display in the about dialog.")
 
 # Channel list URL
-set(MultiMC_CHANLIST_URL "" CACHE STRING "URL for the channel list.")
+set(OpenMC_CHANLIST_URL "" CACHE STRING "URL for the channel list.")
 
 # Notification URL
-set(MultiMC_NOTIFICATION_URL "" CACHE STRING "URL for checking for notifications.")
+set(OpenMC_NOTIFICATION_URL "" CACHE STRING "URL for checking for notifications.")
 
 # The metadata server
-set(MultiMC_META_URL "https://meta.multimc.org/v1/" CACHE STRING "URL to fetch MultiMC's meta files from.")
+set(OpenMC_META_URL "https://meta.multimc.org/v1/" CACHE STRING "URL to fetch OpenMC's meta files from.")
 
 # paste.ee API key
-set(MultiMC_PASTE_EE_API_KEY "utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ" CACHE STRING "API key you can get from paste.ee when you register an account")
+set(OpenMC_PASTE_EE_API_KEY "utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ" CACHE STRING "API key you can get from paste.ee when you register an account")
 
 # Google analytics ID
-set(MultiMC_ANALYTICS_ID "UA-87731965-2" CACHE STRING "ID you can get from Google analytics")
+set(OpenMC_ANALYTICS_ID "UA-87731965-2" CACHE STRING "ID you can get from Google analytics")
 
 # Bug tracker URL
-set(MultiMC_BUG_TRACKER_URL "" CACHE STRING "URL for the bug tracker.")
+set(OpenMC_BUG_TRACKER_URL "" CACHE STRING "URL for the bug tracker.")
 
 # Discord URL
-set(MultiMC_DISCORD_URL "" CACHE STRING "URL for the Discord guild.")
+set(OpenMC_DISCORD_URL "" CACHE STRING "URL for the Discord guild.")
 
 # Subreddit URL
-set(MultiMC_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
+set(OpenMC_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
 
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
-get_git_head_revision(MultiMC_GIT_REFSPEC MultiMC_GIT_COMMIT)
+get_git_head_revision(OpenMC_GIT_REFSPEC OpenMC_GIT_COMMIT)
 
-message(STATUS "Git commit: ${MultiMC_GIT_COMMIT}")
-message(STATUS "Git refspec: ${MultiMC_GIT_REFSPEC}")
+message(STATUS "Git commit: ${OpenMC_GIT_COMMIT}")
+message(STATUS "Git refspec: ${OpenMC_GIT_REFSPEC}")
 
-set(MultiMC_RELEASE_VERSION_NAME "${MultiMC_VERSION_MAJOR}.${MultiMC_VERSION_MINOR}.${MultiMC_VERSION_HOTFIX}")
+set(OpenMC_RELEASE_VERSION_NAME "${OpenMC_VERSION_MAJOR}.${OpenMC_VERSION_MINOR}.${OpenMC_VERSION_HOTFIX}")
 
 #### Custom target to just print the version.
-add_custom_target(version echo "Version: ${MultiMC_RELEASE_VERSION_NAME}")
-add_custom_target(tcversion echo "\\#\\#teamcity[setParameter name=\\'env.MULTIMC_VERSION\\' value=\\'${MultiMC_RELEASE_VERSION_NAME}\\']")
+add_custom_target(version echo "Version: ${OpenMC_RELEASE_VERSION_NAME}")
+add_custom_target(tcversion echo "\\#\\#teamcity[setParameter name=\\'env.OPENMC_VERSION\\' value=\\'${OpenMC_RELEASE_VERSION_NAME}\\']")
 
 ################################ 3rd Party Libs ################################
 
@@ -126,44 +126,44 @@ endif()
 ####################################### Install layout #######################################
 
 # How to install the build results
-set(MultiMC_LAYOUT "auto" CACHE STRING "The layout for MultiMC installation (auto, win-bundle, lin-bundle, lin-nodeps, lin-system, mac-bundle)")
-set_property(CACHE MultiMC_LAYOUT PROPERTY STRINGS auto win-bundle lin-bundle lin-nodeps lin-system mac-bundle)
+set(OpenMC_LAYOUT "auto" CACHE STRING "The layout for OpenMC installation (auto, win-bundle, lin-bundle, lin-nodeps, lin-system, mac-bundle)")
+set_property(CACHE OpenMC_LAYOUT PROPERTY STRINGS auto win-bundle lin-bundle lin-nodeps lin-system mac-bundle)
 
-if(MultiMC_LAYOUT STREQUAL "auto")
+if(OpenMC_LAYOUT STREQUAL "auto")
     if(UNIX AND APPLE)
-        set(MultiMC_LAYOUT_REAL "mac-bundle")
+        set(OpenMC_LAYOUT_REAL "mac-bundle")
     elseif(UNIX)
-        set(MultiMC_LAYOUT_REAL "lin-nodeps")
+        set(OpenMC_LAYOUT_REAL "lin-nodeps")
     elseif(WIN32)
-        set(MultiMC_LAYOUT_REAL "win-bundle")
+        set(OpenMC_LAYOUT_REAL "win-bundle")
     else()
         message(FATAL_ERROR "Cannot choose a sensible install layout for your platform.")
     endif()
 else()
-    set(MultiMC_LAYOUT_REAL ${MultiMC_LAYOUT})
+    set(OpenMC_LAYOUT_REAL ${OpenMC_LAYOUT})
 endif()
 
-if(MultiMC_LAYOUT_REAL STREQUAL "mac-bundle")
-    set(BINARY_DEST_DIR "MultiMC.app/Contents/MacOS")
-    set(LIBRARY_DEST_DIR "MultiMC.app/Contents/MacOS")
-    set(PLUGIN_DEST_DIR "MultiMC.app/Contents/MacOS")
-    set(RESOURCES_DEST_DIR "MultiMC.app/Contents/Resources")
-    set(JARS_DEST_DIR "MultiMC.app/Contents/MacOS/jars")
+if(OpenMC_LAYOUT_REAL STREQUAL "mac-bundle")
+    set(BINARY_DEST_DIR "OpenMC.app/Contents/MacOS")
+    set(LIBRARY_DEST_DIR "OpenMC.app/Contents/MacOS")
+    set(PLUGIN_DEST_DIR "OpenMC.app/Contents/MacOS")
+    set(RESOURCES_DEST_DIR "OpenMC.app/Contents/Resources")
+    set(JARS_DEST_DIR "OpenMC.app/Contents/MacOS/jars")
 
     set(BUNDLE_DEST_DIR ".")
 
     # Apps to bundle
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/MultiMC.app")
+    set(APPS "\${CMAKE_INSTALL_PREFIX}/OpenMC.app")
 
     # Mac bundle settings
-    set(MACOSX_BUNDLE_BUNDLE_NAME "MultiMC")
-    set(MACOSX_BUNDLE_INFO_STRING "MultiMC Minecraft launcher and management utility.")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.multimc.MultiMC5")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${MultiMC_VERSION_MAJOR}.${MultiMC_VERSION_MINOR}.${MultiMC_VERSION_HOTFIX}.${MultiMC_VERSION_BUILD}")
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${MultiMC_VERSION_MAJOR}.${MultiMC_VERSION_MINOR}.${MultiMC_VERSION_HOTFIX}.${MultiMC_VERSION_BUILD}")
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MultiMC_VERSION_MAJOR}.${MultiMC_VERSION_MINOR}.${MultiMC_VERSION_HOTFIX}.${MultiMC_VERSION_BUILD}")
-    set(MACOSX_BUNDLE_ICON_FILE MultiMC.icns)
-    set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2015-2021 MultiMC Contributors")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "OpenMC")
+    set(MACOSX_BUNDLE_INFO_STRING "OpenMC Minecraft launcher and management utility.")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.openmc.OpenMC5")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${OpenMC_VERSION_MAJOR}.${OpenMC_VERSION_MINOR}.${OpenMC_VERSION_HOTFIX}.${OpenMC_VERSION_BUILD}")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${OpenMC_VERSION_MAJOR}.${OpenMC_VERSION_MINOR}.${OpenMC_VERSION_HOTFIX}.${OpenMC_VERSION_BUILD}")
+    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${OpenMC_VERSION_MAJOR}.${OpenMC_VERSION_MINOR}.${OpenMC_VERSION_HOTFIX}.${OpenMC_VERSION_BUILD}")
+    set(MACOSX_BUNDLE_ICON_FILE OpenMC.icns)
+    set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2015-2021 OpenMC Contributors")
 
     # directories to look for dependencies
     set(DIRS ${QT_LIBS_DIR} ${QT_LIBEXECS_DIR} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -172,9 +172,9 @@ if(MultiMC_LAYOUT_REAL STREQUAL "mac-bundle")
     set(INSTALL_BUNDLE "full")
 
     # Add the icon
-    install(FILES application/resources/MultiMC.icns DESTINATION ${RESOURCES_DEST_DIR})
+    install(FILES application/resources/OpenMC.icns DESTINATION ${RESOURCES_DEST_DIR})
 
-elseif(MultiMC_LAYOUT_REAL STREQUAL "lin-bundle")
+elseif(OpenMC_LAYOUT_REAL STREQUAL "lin-bundle")
     set(BINARY_DEST_DIR "bin")
     set(LIBRARY_DEST_DIR "bin")
     set(PLUGIN_DEST_DIR "plugins")
@@ -183,7 +183,7 @@ elseif(MultiMC_LAYOUT_REAL STREQUAL "lin-bundle")
     set(JARS_DEST_DIR "bin/jars")
 
     # Apps to bundle
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/MultiMC")
+    set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/OpenMC")
 
     # directories to look for dependencies
     set(DIRS ${QT_LIBS_DIR} ${QT_LIBEXECS_DIR} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -192,12 +192,12 @@ elseif(MultiMC_LAYOUT_REAL STREQUAL "lin-bundle")
     set(INSTALL_BUNDLE "full")
 
     # Set RPATH
-    SET(MultiMC_BINARY_RPATH "$ORIGIN/")
+    SET(OpenMC_BINARY_RPATH "$ORIGIN/")
 
     # Install basic runner script
-    install(PROGRAMS application/package/linux/MultiMC DESTINATION ${BUNDLE_DEST_DIR})
+    install(PROGRAMS application/package/linux/OpenMC DESTINATION ${BUNDLE_DEST_DIR})
 
-elseif(MultiMC_LAYOUT_REAL STREQUAL "lin-nodeps")
+elseif(OpenMC_LAYOUT_REAL STREQUAL "lin-nodeps")
     set(BINARY_DEST_DIR "bin")
     set(LIBRARY_DEST_DIR "bin")
     set(PLUGIN_DEST_DIR "plugins")
@@ -209,28 +209,28 @@ elseif(MultiMC_LAYOUT_REAL STREQUAL "lin-nodeps")
     set(INSTALL_BUNDLE "nodeps")
 
     # Set RPATH
-    SET(MultiMC_BINARY_RPATH "$ORIGIN/")
+    SET(OpenMC_BINARY_RPATH "$ORIGIN/")
 
     # Install basic runner script
-    install(PROGRAMS application/package/linux/MultiMC DESTINATION ${BUNDLE_DEST_DIR})
+    install(PROGRAMS application/package/linux/OpenMC DESTINATION ${BUNDLE_DEST_DIR})
 
-elseif(MultiMC_LAYOUT_REAL STREQUAL "lin-system")
-    set(MultiMC_APP_BINARY_NAME "multimc" CACHE STRING "Name of the MultiMC binary")
-    set(MultiMC_BINARY_DEST_DIR "bin" CACHE STRING "Path to the binary directory")
-    set(MultiMC_LIBRARY_DEST_DIR "lib${LIB_SUFFIX}" CACHE STRING "Path to the library directory")
-    set(MultiMC_SHARE_DEST_DIR "share/multimc" CACHE STRING "Path to the shared data directory")
-    set(JARS_DEST_DIR "${MultiMC_SHARE_DEST_DIR}/jars")
+elseif(OpenMC_LAYOUT_REAL STREQUAL "lin-system")
+    set(OpenMC_APP_BINARY_NAME "openmc" CACHE STRING "Name of the OpenMC binary")
+    set(OpenMC_BINARY_DEST_DIR "bin" CACHE STRING "Path to the binary directory")
+    set(OpenMC_LIBRARY_DEST_DIR "lib${LIB_SUFFIX}" CACHE STRING "Path to the library directory")
+    set(OpenMC_SHARE_DEST_DIR "share/openmc" CACHE STRING "Path to the shared data directory")
+    set(JARS_DEST_DIR "${OpenMC_SHARE_DEST_DIR}/jars")
 
-    set(BINARY_DEST_DIR ${MultiMC_BINARY_DEST_DIR})
-    set(LIBRARY_DEST_DIR ${MultiMC_LIBRARY_DEST_DIR})
+    set(BINARY_DEST_DIR ${OpenMC_BINARY_DEST_DIR})
+    set(LIBRARY_DEST_DIR ${OpenMC_LIBRARY_DEST_DIR})
 
-    MESSAGE(STATUS "Compiling for linux system with ${MultiMC_SHARE_DEST_DIR} and MULTIMC_LINUX_DATADIR")
-    SET(MultiMC_APP_BINARY_DEFS "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}" "-DMULTIMC_LINUX_DATADIR")
+    MESSAGE(STATUS "Compiling for linux system with ${OpenMC_SHARE_DEST_DIR} and OPENMC_LINUX_DATADIR")
+    SET(OpenMC_APP_BINARY_DEFS "-DOPENMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}" "-DOPENMC_LINUX_DATADIR")
 
     # install as bundle with no dependencies included
     set(INSTALL_BUNDLE "nodeps")
 
-elseif(MultiMC_LAYOUT_REAL STREQUAL "win-bundle")
+elseif(OpenMC_LAYOUT_REAL STREQUAL "win-bundle")
     set(BINARY_DEST_DIR ".")
     set(LIBRARY_DEST_DIR ".")
     set(PLUGIN_DEST_DIR ".")
@@ -239,7 +239,7 @@ elseif(MultiMC_LAYOUT_REAL STREQUAL "win-bundle")
     set(JARS_DEST_DIR "jars")
 
     # Apps to bundle
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/MultiMC.exe")
+    set(APPS "\${CMAKE_INSTALL_PREFIX}/OpenMC.exe")
 
     # directories to look for dependencies
     set(DIRS ${QT_LIBS_DIR} ${QT_LIBEXECS_DIR} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -11,7 +11,7 @@ Build Instructions
 
 # Note
 
-MultiMC is a portable application and is not supposed to be installed into any system folders.
+OpenMC is a portable application and is not supposed to be installed into any system folders.
 That would be anything outside your home folder. Before runing `make install`, make sure
 you set the install path to something you have write access to. Never build this under
 an administrator/root level account. Don't use `sudo`. It won't work and it's not supposed to work.
@@ -22,7 +22,7 @@ an administrator/root level account. Don't use `sudo`. It won't work and it's no
 Clone the source code using git and grab all the submodules:
 
 ```
-git clone git@github.com:MultiMC/MultiMC5.git
+git clone git@github.com:TheExistingOne/OpenMC.git
 git submodule init
 git submodule update
 ```
@@ -42,15 +42,15 @@ Getting the project to build and run on Linux is easy if you use any modern and 
 ### Building from command line
 You need a source folder, a build folder and an install folder.
 
-Let's say you want everything in `~/MultiMC/`:
+Let's say you want everything in `~/OpenMC/`:
 
 ```
 # make all the folders
-mkdir ~/MultiMC && cd ~/MultiMC
+mkdir ~/OpenMC && cd ~/OpenMC
 mkdir build
 mkdir install
 # clone the complete source
-git clone --recursive https://github.com/MultiMC/MultiMC5.git src
+git clone --recursive https://github.com/TheExistingOne/OpenMC.git src
 # configure the project
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=../install ../src
@@ -74,7 +74,7 @@ You can use IDEs like KDevelop or QtCreator to open the CMake project if you wan
 ### Loading the project in Qt Creator (optional)
 1. Open Qt Creator.
 2. Choose `File->Open File or Project`.
-3. Navigate to the MultiMC5 source folder you cloned and choose CMakeLists.txt.
+3. Navigate to the OpenMC5 source folder you cloned and choose CMakeLists.txt.
 4. Read the instructions that just popped up about a build location and choose one.
 5. You should see "Run CMake" in the window.
     - Make sure that Generator is set to "Unix Generator (Desktop Qt 5.6.x GCC 64bit)".
@@ -185,8 +185,8 @@ zlib1.dll
 Pick an installation path - this is where the final `.app` will be constructed when you run `make install`. Supply it as the `CMAKE_INSTALL_PREFIX` argument during CMake configuration.
 
 ```
-git clone --recursive https://github.com/MultiMC/MultiMC5.git
-cd MultiMC5
+git clone --recursive https://github.com/OpenMC/OpenMC.git
+cd OpenMC
 mkdir build
 cd build
 cmake \
@@ -196,7 +196,7 @@ cmake \
  -DCMAKE_INSTALL_PREFIX:PATH="../dist/" \
  -DCMAKE_PREFIX_PATH="/path/to/Qt5.6/" \
  -DQt5_DIR="/path/to/Qt5.6/" \
- -DMultiMC_LAYOUT=mac-bundle \
+ -DOpenMC_LAYOUT=mac-bundle \
  -DCMAKE_OSX_DEPLOYMENT_TARGET=10.7 \
  ..
 make install
