@@ -15,16 +15,16 @@ If you want to help out, open an issue or fork it and create a pull request.
 ### Building
 If you want to build OpenMC yourself, check [BUILD.md](BUILD.md) for build instructions.
 
-## Collaboration Policy
-OpenMC is created by the community, for the community. Features are community driven and if enough people request it, it'll probably be implemented.
-
 ### Code formatting
 Just follow the existing formatting.
-
+v
 In general:
 * Indent with 4 space unless it's in a submodule
 * Keep lists (of arguments, parameters, initializators...) as lists, not paragraphs.
 * Optimize for readability
+
+## Collaboration Policy
+OpenMC is created by the community, for the community. Features are community driven and if enough people request it, it'll probably be implemented.
 
 ## Forking/Redistributing
 OpenMC welcomes forks, although we would prefer if you clarify that it is a fork. The name and logo are also goverened under the Apache 2 license that this project is distributed under and as suck are available for use assuming credit is given
